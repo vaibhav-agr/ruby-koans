@@ -29,8 +29,55 @@ require File.expand_path(File.dirname(__FILE__) + '/neo')
 #
 # Your goal is to write the score method.
 
+def get_frequencies(array)
+  freq_hash = Hash.new(0)
+  array.each do |elements|
+    freq_hash[elements] += 1
+  end
+  freq_hash
+end
+
+def get_score_for_side(side)
+  side == 5 ? 50 : side == 1 ? 100 : 0
+end
+
+def get_score_by_counts(key, value)
+  sum = 0
+  if key == 1
+    if value >= 3
+      sum += 1000
+      value -= 3
+    end
+    if value >= 1
+      sum += (get_score_for_side(key) * value)
+    end
+  else
+    if value >= 3
+      sum += (key * 100)
+      value -= 3
+    end
+    if value >= 1
+      sum += (get_score_for_side(key) * value)
+    end
+  end
+  sum
+end
+
 def score(dice)
   # You need to write this method
+  case dice.size
+  when 0
+    return 0
+  when 1
+    return get_score_for_side(dice[0])
+  else
+    frequencies = get_frequencies(dice)
+    sum = 0
+    frequencies.each do |key, value|
+      sum += get_score_by_counts(key, value)
+    end
+    return sum
+  end
 end
 
 class AboutScoringProject < Neo::Koan
